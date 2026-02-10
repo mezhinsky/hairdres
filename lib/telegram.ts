@@ -1,6 +1,10 @@
+type InlineButton = { text: string; callback_data: string };
+type InlineKeyboard = InlineButton[][];
+
 export async function sendTelegramMessage(
   chatId: string,
-  text: string
+  text: string,
+  keyboard?: InlineKeyboard
 ): Promise<boolean> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) {
@@ -9,23 +13,51 @@ export async function sendTelegramMessage(
   }
 
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
-  const body = JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" });
+  const payload: Record<string, unknown> = {
+    chat_id: chatId,
+    text,
+    parse_mode: "HTML",
+  };
 
-  console.log("Telegram: sending to chat", chatId, "token length:", token.length);
+  if (keyboard) {
+    payload.reply_markup = { inline_keyboard: keyboard };
+  }
 
   try {
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body,
+      body: JSON.stringify(payload),
     });
 
     const data = await res.text();
-    console.log("Telegram response:", res.status, data);
+    if (!res.ok) console.error("Telegram API error:", res.status, data);
 
     return res.ok;
   } catch (error) {
     console.error("Telegram fetch error:", error);
+    return false;
+  }
+}
+
+export async function answerCallbackQuery(
+  callbackQueryId: string,
+  text?: string
+): Promise<boolean> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) return false;
+
+  try {
+    const res = await fetch(
+      `https://api.telegram.org/bot${token}/answerCallbackQuery`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ callback_query_id: callbackQueryId, text }),
+      }
+    );
+    return res.ok;
+  } catch {
     return false;
   }
 }
