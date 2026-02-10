@@ -78,15 +78,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send Telegram notification (non-blocking)
-    sendBookingNotification({
+    // Send Telegram notification — await before returning,
+    // otherwise Vercel kills the function and the request gets dropped
+    await sendBookingNotification({
       client_name: body.client_name,
       client_phone: body.client_phone,
       booking_date: body.booking_date,
       booking_time: body.booking_time,
       service_name: service.name,
       duration_minutes: service.duration_minutes,
-    }).catch(console.error);
+    });
 
     return NextResponse.json({ booking }, { status: 201 });
   } catch {

@@ -1,64 +1,33 @@
-import { spawn } from "node:child_process";
-
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
-
-function telegramRequest(
-  method: string,
-  body: Record<string, unknown>
-): Promise<boolean> {
-  return new Promise((resolve) => {
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${method}`;
-    const data = JSON.stringify(body);
-
-    console.log("Telegram: sending to", url.replace(TELEGRAM_BOT_TOKEN!, "***"));
-    const proc = spawn("/usr/bin/curl", [
-      "-4", "-s", "-v", "-o", "/dev/null", "-w", "%{http_code}",
-      "-X", "POST",
-      "-H", "Content-Type: application/json",
-      "-d", "@-",
-      "--connect-timeout", "10",
-      url,
-    ]);
-
-    let stdout = "";
-    let stderr = "";
-    proc.stdout.on("data", (chunk) => (stdout += chunk));
-    proc.stderr.on("data", (chunk) => (stderr += chunk));
-
-    proc.on("close", (code) => {
-      if (code !== 0) {
-        console.error("Telegram curl exit code:", code, "stderr:", stderr, "url:", url.replace(TELEGRAM_BOT_TOKEN!, "BOT_TOKEN"));
-        resolve(false);
-        return;
-      }
-      resolve(stdout.trim() === "200");
-    });
-
-    proc.on("error", (err) => {
-      console.error("Telegram spawn error:", err.message);
-      resolve(false);
-    });
-
-    proc.stdin.write(data);
-    proc.stdin.end();
-  });
-}
-
 export async function sendTelegramMessage(
   chatId: string,
   text: string
 ): Promise<boolean> {
-  if (!TELEGRAM_BOT_TOKEN) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) {
     console.warn("TELEGRAM_BOT_TOKEN not set, skipping message");
     return false;
   }
 
-  return telegramRequest("sendMessage", {
-    chat_id: chatId,
-    text,
-    parse_mode: "HTML",
-  });
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+  const body = JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" });
+
+  console.log("Telegram: sending to chat", chatId, "token length:", token.length);
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
+
+    const data = await res.text();
+    console.log("Telegram response:", res.status, data);
+
+    return res.ok;
+  } catch (error) {
+    console.error("Telegram fetch error:", error);
+    return false;
+  }
 }
 
 export async function sendBookingNotification(booking: {
@@ -69,7 +38,8 @@ export async function sendBookingNotification(booking: {
   service_name: string;
   duration_minutes: number;
 }): Promise<boolean> {
-  if (!TELEGRAM_ADMIN_CHAT_ID) {
+  const chatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
+  if (!chatId) {
     console.warn("TELEGRAM_ADMIN_CHAT_ID not set, skipping notification");
     return false;
   }
@@ -83,5 +53,5 @@ export async function sendBookingNotification(booking: {
     `<b>Время:</b> ${booking.booking_time}\n` +
     `<b>Длительность:</b> ${booking.duration_minutes} мин.`;
 
-  return sendTelegramMessage(TELEGRAM_ADMIN_CHAT_ID, message);
+  return sendTelegramMessage(chatId, message);
 }
