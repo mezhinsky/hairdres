@@ -28,6 +28,7 @@ export function BookingForm({ services }: BookingFormProps) {
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [telegram, setTelegram] = useState("");
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -107,6 +108,7 @@ export function BookingForm({ services }: BookingFormProps) {
           service_id: serviceId,
           client_name: name.trim(),
           client_phone: phone.trim(),
+          client_telegram: telegram.trim() || undefined,
           booking_date: date,
           booking_time: time,
         }),
@@ -123,6 +125,7 @@ export function BookingForm({ services }: BookingFormProps) {
       setTime("");
       setName("");
       setPhone("");
+      setTelegram("");
       setSlots([]);
     } catch (err) {
       toast.error(
@@ -246,6 +249,17 @@ export function BookingForm({ services }: BookingFormProps) {
               placeholder="+7 (___) ___-__-__"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              disabled={!time}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="telegram">Telegram (необязательно)</Label>
+            <Input
+              id="telegram"
+              placeholder="@username"
+              value={telegram}
+              onChange={(e) => setTelegram(e.target.value)}
               disabled={!time}
             />
           </div>

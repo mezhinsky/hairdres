@@ -10,6 +10,7 @@ export const NAV_ITEMS = [
   { label: "Контакты", href: "#contacts" },
 ] as const;
 
-export const PHONE_NUMBER = "+7 (999) 123-45-67";
-export const ADDRESS = "г. Москва, ул. Примерная, д. 1";
+export const PHONE_NUMBER = "+7 (916) 419-24-94";
+export const ADDRESS = "г. Москва, Северное Бутово";
 export const INSTAGRAM = "@olga_hair";
+export const TELEGRAM = "@olyadelova75";

@@ -33,6 +33,7 @@ export async function sendTelegramMessage(
 export async function sendBookingNotification(booking: {
   client_name: string;
   client_phone: string;
+  client_telegram?: string;
   booking_date: string;
   booking_time: string;
   service_name: string;
@@ -44,11 +45,16 @@ export async function sendBookingNotification(booking: {
     return false;
   }
 
+  const tgLine = booking.client_telegram
+    ? `\n<b>Telegram:</b> ${booking.client_telegram}`
+    : "";
+
   const message =
     `<b>Новая запись!</b>\n\n` +
     `<b>Клиент:</b> ${booking.client_name}\n` +
-    `<b>Телефон:</b> ${booking.client_phone}\n` +
-    `<b>Услуга:</b> ${booking.service_name}\n` +
+    `<b>Телефон:</b> ${booking.client_phone}` +
+    tgLine +
+    `\n<b>Услуга:</b> ${booking.service_name}\n` +
     `<b>Дата:</b> ${booking.booking_date}\n` +
     `<b>Время:</b> ${booking.booking_time}\n` +
     `<b>Длительность:</b> ${booking.duration_minutes} мин.`;

@@ -15,6 +15,7 @@ CREATE TABLE bookings (
   service_id UUID REFERENCES services(id) NOT NULL,
   client_name TEXT NOT NULL,
   client_phone TEXT NOT NULL,
+  client_telegram TEXT,
   booking_date DATE NOT NULL,
   booking_time TEXT NOT NULL,
   duration_minutes INTEGER NOT NULL,

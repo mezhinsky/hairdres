@@ -1,6 +1,15 @@
-import { Camera } from "lucide-react";
+import Image from "next/image";
 
-const PLACEHOLDERS = Array.from({ length: 6 }, (_, i) => i + 1);
+const PORTFOLIO_ITEMS = [
+  { src: "/2e5tvtle3o.jpg", alt: "Укладка на длинные волосы" },
+  { src: "/5984d10cng.jpg", alt: "Восстановление и блеск" },
+  { src: "/5qrrof63r9.jpg", alt: "Блонд каре" },
+  { src: "/5idoq8mls3.jpg", alt: "Окрашивание до/после" },
+  { src: "/39pnpqregp.jpg", alt: "Короткая стрижка" },
+  { src: "/39k3iqrgsq.jpg", alt: "Рыжее окрашивание" },
+  { src: "/1q4l5rrt18.jpg", alt: "Блонд с укладкой" },
+  { src: "/7bv3l3pbu6.jpg", alt: "Каре с мелированием" },
+];
 
 export function Portfolio() {
   return (
@@ -11,14 +20,22 @@ export function Portfolio() {
           Примеры моих работ
         </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          {PLACEHOLDERS.map((n) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          {PORTFOLIO_ITEMS.map((item) => (
             <div
-              key={n}
-              className="aspect-square rounded-xl bg-secondary/50 border flex flex-col items-center justify-center gap-2 text-muted-foreground"
+              key={item.src}
+              className="group relative aspect-[3/4] rounded-xl overflow-hidden border"
             >
-              <Camera className="h-8 w-8" />
-              <span className="text-xs">Фото {n}</span>
+              <Image
+                src={item.src}
+                alt={item.alt}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-8">
+                <p className="text-white text-sm font-medium">{item.alt}</p>
+              </div>
             </div>
           ))}
         </div>

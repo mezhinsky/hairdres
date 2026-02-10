@@ -24,10 +24,10 @@ async function getBookingsForDate(date: string): Promise<string> {
     return `Записей на ${date} нет.`;
   }
 
-  const lines = bookings.map(
-    (b) =>
-      `${b.booking_time} — ${b.client_name} (${b.client_phone})\n  ${b.service?.name || "Услуга"}, ${b.duration_minutes} мин. [ID: ${b.id.slice(0, 8)}]`
-  );
+  const lines = bookings.map((b) => {
+    const tg = b.client_telegram ? ` | TG: ${b.client_telegram}` : "";
+    return `${b.booking_time} — ${b.client_name} (${b.client_phone}${tg})\n  ${b.service?.name || "Услуга"}, ${b.duration_minutes} мин. [ID: ${b.id.slice(0, 8)}]`;
+  });
 
   return `<b>Записи на ${date}:</b>\n\n${lines.join("\n\n")}`;
 }
@@ -107,9 +107,12 @@ export async function POST(request: NextRequest) {
 
     const chatId = String(message.chat.id);
 
-    // Only respond to admin
-    if (ADMIN_CHAT_ID && chatId !== ADMIN_CHAT_ID) {
-      return NextResponse.json({ ok: true });
+    // Only respond to admins
+    if (ADMIN_CHAT_ID) {
+      const adminIds = ADMIN_CHAT_ID.split(",").map((id) => id.trim());
+      if (!adminIds.includes(chatId)) {
+        return NextResponse.json({ ok: true });
+      }
     }
 
     const reply = await handleCommand(chatId, message.text.trim());

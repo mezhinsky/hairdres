@@ -1,5 +1,5 @@
-import { MapPin, Phone, Instagram } from "lucide-react";
-import { PHONE_NUMBER, ADDRESS, INSTAGRAM } from "@/lib/constants";
+import { MapPin, Phone, Instagram, Send } from "lucide-react";
+import { PHONE_NUMBER, ADDRESS, INSTAGRAM, TELEGRAM } from "@/lib/constants";
 
 export function Contacts() {
   return (
@@ -35,6 +35,21 @@ export function Contacts() {
             </div>
 
             <div className="flex items-start gap-3">
+              <Send className="h-5 w-5 text-primary mt-0.5" />
+              <div>
+                <p className="font-medium">Telegram</p>
+                <a
+                  href={`https://t.me/${TELEGRAM.replace("@", "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {TELEGRAM}
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
               <MapPin className="h-5 w-5 text-primary mt-0.5" />
               <div>
                 <p className="font-medium">Адрес</p>
@@ -43,12 +58,17 @@ export function Contacts() {
             </div>
           </div>
 
-          {/* Map placeholder */}
-          <div className="aspect-video md:aspect-auto md:min-h-[250px] rounded-xl bg-muted border flex items-center justify-center text-muted-foreground">
-            <div className="text-center">
-              <MapPin className="h-8 w-8 mx-auto mb-2" />
-              <span className="text-sm">Карта (заглушка)</span>
-            </div>
+          {/* Yandex Map — Северное Бутово */}
+          <div className="aspect-video md:aspect-auto md:min-h-[300px] rounded-xl overflow-hidden border">
+            <iframe
+              src="https://yandex.ru/map-widget/v1/?ll=37.578&pt=37.578,55.570,pm2rdm~&z=14&l=map"
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: 300 }}
+              allowFullScreen
+              loading="lazy"
+              title="Северное Бутово на карте"
+            />
           </div>
         </div>
       </div>

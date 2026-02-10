@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
         service_id: body.service_id,
         client_name: body.client_name,
         client_phone: body.client_phone,
+        client_telegram: body.client_telegram || null,
         booking_date: body.booking_date,
         booking_time: body.booking_time,
         duration_minutes: service.duration_minutes,
@@ -83,6 +84,7 @@ export async function POST(request: NextRequest) {
     await sendBookingNotification({
       client_name: body.client_name,
       client_phone: body.client_phone,
+      client_telegram: body.client_telegram,
       booking_date: body.booking_date,
       booking_time: body.booking_time,
       service_name: service.name,

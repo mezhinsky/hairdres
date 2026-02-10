@@ -13,6 +13,7 @@ export interface Booking {
   service_id: string;
   client_name: string;
   client_phone: string;
+  client_telegram: string | null;
   booking_date: string;
   booking_time: string;
   duration_minutes: number;
@@ -26,6 +27,7 @@ export interface BookingFormData {
   service_id: string;
   client_name: string;
   client_phone: string;
+  client_telegram?: string;
   booking_date: string;
   booking_time: string;
 }
