@@ -11,8 +11,9 @@ function telegramRequest(
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/${method}`;
     const data = JSON.stringify(body);
 
-    const proc = spawn("curl", [
-      "-4", "-s", "-o", "/dev/null", "-w", "%{http_code}",
+    console.log("Telegram: sending to", url.replace(TELEGRAM_BOT_TOKEN!, "***"));
+    const proc = spawn("/usr/bin/curl", [
+      "-4", "-s", "-v", "-o", "/dev/null", "-w", "%{http_code}",
       "-X", "POST",
       "-H", "Content-Type: application/json",
       "-d", "@-",
@@ -21,12 +22,13 @@ function telegramRequest(
     ]);
 
     let stdout = "";
+    let stderr = "";
     proc.stdout.on("data", (chunk) => (stdout += chunk));
-    proc.stderr.on("data", () => {});
+    proc.stderr.on("data", (chunk) => (stderr += chunk));
 
     proc.on("close", (code) => {
       if (code !== 0) {
-        console.error("Telegram curl exit code:", code);
+        console.error("Telegram curl exit code:", code, "stderr:", stderr, "url:", url.replace(TELEGRAM_BOT_TOKEN!, "BOT_TOKEN"));
         resolve(false);
         return;
       }
