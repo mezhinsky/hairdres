@@ -47,7 +47,10 @@ async function getBookingsForDate(date: string, withCancelButtons = false) {
   }
 
   const lines = bookings.map((b) => {
-    const tg = b.client_telegram ? ` | TG: ${b.client_telegram}` : "";
+    const username = b.client_telegram?.replace("@", "");
+    const tg = username
+      ? ` | <a href="https://t.me/${username}">${b.client_telegram}</a>`
+      : "";
     return `${b.booking_time} — ${b.client_name} (${b.client_phone}${tg})\n  ${b.service?.name || "Услуга"}, ${b.duration_minutes} мин.`;
   });
 
