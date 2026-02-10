@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "webhook:set": "curl -s \"https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook\" -H 'Content-Type: application/json' -d \"{\\\"url\\\":\\\"${WEBHOOK_URL}/api/telegram/webhook\\\"}\"",
+    "webhook:info": "curl -s \"https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getWebhookInfo\"",
+    "webhook:delete": "curl -s \"https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/deleteWebhook\""
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
