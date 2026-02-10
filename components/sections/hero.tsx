@@ -1,15 +1,25 @@
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Scissors, Award, Heart } from "lucide-react";
+import { Award, Heart } from "lucide-react";
+
+const bookingEnabled =
+  process.env.NEXT_PUBLIC_BOOKING_ENABLED === "true";
 
 export function Hero() {
   return (
     <section id="about" className="py-20 md:py-28">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center">
-          {/* Avatar placeholder */}
-          <div className="mx-auto mb-8 h-32 w-32 rounded-full bg-primary/10 flex items-center justify-center">
-            <Scissors className="h-12 w-12 text-primary" />
+          <div className="mx-auto mb-8 h-40 w-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-lg">
+            <Image
+              src="/olga.jpg"
+              alt="Парикмахер-стилист Ольга Делова"
+              width={160}
+              height={160}
+              className="object-cover w-full h-full"
+              priority
+            />
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
@@ -38,7 +48,9 @@ export function Hero() {
           </div>
 
           <Button asChild size="lg">
-            <a href="#booking">Записаться онлайн</a>
+            <a href={bookingEnabled ? "#booking" : "#contacts"}>
+              {bookingEnabled ? "Записаться онлайн" : "Связаться"}
+            </a>
           </Button>
         </div>
       </div>

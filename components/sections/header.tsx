@@ -5,6 +5,9 @@ import { Menu, X, Scissors } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NAV_ITEMS } from "@/lib/constants";
 
+const bookingEnabled =
+  process.env.NEXT_PUBLIC_BOOKING_ENABLED === "true";
+
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -27,9 +30,11 @@ export function Header() {
               {item.label}
             </a>
           ))}
-          <Button asChild size="sm">
-            <a href="#booking">Записаться</a>
-          </Button>
+          {bookingEnabled && (
+            <Button asChild size="sm">
+              <a href="#booking">Записаться</a>
+            </Button>
+          )}
         </nav>
 
         {/* Mobile toggle */}
@@ -55,11 +60,13 @@ export function Header() {
               {item.label}
             </a>
           ))}
-          <Button asChild size="sm" className="mt-2 w-full">
-            <a href="#booking" onClick={() => setMenuOpen(false)}>
-              Записаться
-            </a>
-          </Button>
+          {bookingEnabled && (
+            <Button asChild size="sm" className="mt-2 w-full">
+              <a href="#booking" onClick={() => setMenuOpen(false)}>
+                Записаться
+              </a>
+            </Button>
+          )}
         </nav>
       )}
     </header>

@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { format, addDays, isBefore, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
 import { toast } from "sonner";
-import { CalendarDays, Clock, Loader2 } from "lucide-react";
+import { CalendarDays, Clock, Loader2, Phone } from "lucide-react";
+import { PHONE_NUMBER, TELEGRAM } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +22,9 @@ import type { Service, TimeSlot } from "@/lib/types";
 interface BookingFormProps {
   services: Service[];
 }
+
+const bookingEnabled =
+  process.env.NEXT_PUBLIC_BOOKING_ENABLED === "true";
 
 export function BookingForm({ services }: BookingFormProps) {
   const [serviceId, setServiceId] = useState("");
@@ -134,6 +138,38 @@ export function BookingForm({ services }: BookingFormProps) {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (!bookingEnabled) {
+    return (
+      <section id="booking" className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-2">Запись</h2>
+          <div className="max-w-lg mx-auto bg-card p-6 sm:p-8 rounded-xl border shadow-sm text-center">
+            <p className="text-muted-foreground mb-4">
+              Онлайн-запись временно недоступна. Для записи свяжитесь напрямую:
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button asChild variant="default" size="lg">
+                <a href={`tel:${PHONE_NUMBER.replace(/\D/g, "")}`}>
+                  <Phone className="h-4 w-4 mr-2" />
+                  {PHONE_NUMBER}
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg">
+                <a
+                  href={`https://t.me/${TELEGRAM.replace("@", "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Написать в Telegram
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (

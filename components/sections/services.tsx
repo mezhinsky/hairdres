@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 import type { Service } from "@/lib/types";
 
+const bookingEnabled =
+  process.env.NEXT_PUBLIC_BOOKING_ENABLED === "true";
+
 interface ServicesProps {
   services: Service[];
 }
@@ -39,9 +42,11 @@ export function Services({ services }: ServicesProps) {
                       {service.price_note ? `от ` : ""}
                       {service.price} ₽
                     </span>
-                    <Button variant="outline" size="sm" asChild>
-                      <a href="#booking">Записаться</a>
-                    </Button>
+                    {bookingEnabled && (
+                      <Button variant="outline" size="sm" asChild>
+                        <a href="#booking">Записаться</a>
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))}
