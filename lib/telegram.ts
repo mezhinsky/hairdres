@@ -38,8 +38,8 @@ export async function sendBookingNotification(booking: {
   service_name: string;
   duration_minutes: number;
 }): Promise<boolean> {
-  const chatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
-  if (!chatId) {
+  const chatIds = process.env.TELEGRAM_ADMIN_CHAT_ID;
+  if (!chatIds) {
     console.warn("TELEGRAM_ADMIN_CHAT_ID not set, skipping notification");
     return false;
   }
@@ -53,5 +53,10 @@ export async function sendBookingNotification(booking: {
     `<b>Время:</b> ${booking.booking_time}\n` +
     `<b>Длительность:</b> ${booking.duration_minutes} мин.`;
 
-  return sendTelegramMessage(chatId, message);
+  const ids = chatIds.split(",").map((id) => id.trim());
+  const results = await Promise.all(
+    ids.map((id) => sendTelegramMessage(id, message))
+  );
+
+  return results.every(Boolean);
 }
